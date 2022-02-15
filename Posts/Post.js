@@ -1,30 +1,28 @@
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
   Image,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
 import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
-import RenderHtml from 'react-native-render-html';
-import HTMLView from 'react-native-htmlview';
+import HTML from 'react-native-renders-html';
+import {IGNORED_TAGS} from 'react-native-renders-html/src/HTMLUtils';
 
 const Post = props => {
-  const {width} = useWindowDimensions();
-
   if (!props.data.post) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={{padding: 20}}>
       <Image
         source={{uri: props.data.post.featuredImage.node.sourceUrl}}
         resizeMode="cover"
@@ -35,30 +33,39 @@ const Post = props => {
           marginBottom: 10,
         }}
       />
-      <Text style={{fontFamily: 'Poppins-Bold', fontSize: 20, color: 'black'}}>
+      <Text
+        style={{
+          fontFamily: 'Poppins-Bold',
+          fontSize: 22,
+          color: 'black',
+          marginTop: 20,
+        }}>
         {props.data.post.title}
       </Text>
 
-      {/* <RenderHtml
-        contentWidth={width}
-        source={{html: props.data.post.content}}
+      <HTML
+        html={props.data.post.content}
+        ignoredTags={[...IGNORED_TAGS, 'svg']}
+        ignoredStyles={['display', 'width', 'height', 'font-family', 'padding']}
         tagsStyles={{
-          a: {color: 'green'},
+          a: {
+            color: 'red',
+          },
+          p: {
+            fontFamily: 'Poppins-Regular',
+            lineHeight: 30,
+            fontSize: 16,
+          },
+          img: {
+            marginBottom: 30,
+            marginTop: 20,
+          },
+          iframe: {
+            marginTop: 20,
+            marginBottom: 20,
+          },
         }}
-      /> */}
-      {/* <Text
-        style={{
-          fontFamily: 'Poppins-SemiBold',
-          width: '100%',
-          textAlign: 'left',
-        }}>
-        {props.data.post.content.replace(/<\/?[^>]+(>|$)/g, '')}
-      </Text> */}
-
-      {/* <HTMLView
-        value={props.data.post.content}
-        onLinkPress={url => console.log('clicked')}
-      /> */}
+      />
     </ScrollView>
   );
 };
@@ -88,9 +95,3 @@ export default graphql(getPostById, {
     };
   },
 })(Post);
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-});

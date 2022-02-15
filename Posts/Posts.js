@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import {Query} from 'react-apollo';
@@ -34,13 +35,12 @@ const Posts = ({navigation}) => {
       {({loading, error, data}) => {
         if (loading) {
           return (
-            <View>
-              <Text>Loading...</Text>
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <ActivityIndicator size="large" />
             </View>
           );
         }
-
-        console.log(data);
 
         return (
           <ScrollView style={styles.container}>
@@ -57,13 +57,14 @@ const Posts = ({navigation}) => {
                       marginBottom: 10,
                     }}
                   />
-                  <Text style={{fontFamily: 'Poppins-Bold'}}>
-                    {post.node.title}
-                  </Text>
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate('Post', {id: post.node.id})
                     }>
+                    <Text style={{fontFamily: 'Poppins-Bold'}}>
+                      {post.node.title}
+                    </Text>
+
                     <Text style={{fontFamily: 'Poppins-Regular'}}>
                       Read More...
                     </Text>
